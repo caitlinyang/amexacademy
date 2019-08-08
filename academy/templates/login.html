@@ -9,7 +9,7 @@
     <div class="container">
         <div>
             <div>
-                <h1 style="text-align: center">LOGIN</h1>
+                <h1 style="text-align: center">AMEX ACADEMY</h1>
                 {% with messages = get_flashed_messages(with_categories=true) %}
                     {% if messages %}
                         {% for category, message in messages %}
@@ -48,24 +48,12 @@
                                 {{ form.password(class="form-control form-control-lg") }}
                             {% endif %}
                         </div>
-                        <div class="form-check">
-                            {{ form.remember(class="form-check-input") }}
-                            {{ form.remember.label(class="form-check-label") }}
-                        </div>
-                        <small class="text-muted ml-2">
-                            <a href="#">Forget Password? Click Here.</a>
-                        </small>
                     </fieldset>
                     <div class="form-group">
-                        {{ form.submit(class="btn btn-outline-info") }}
+                        {{ form.submit(class="btn btn-outline-primary") }}
                         <a href="{{ url_for('welcome') }}" class="btn btn-outline-danger">Cancel</a>
                     </div>
                 </form>
-            </div>
-            <div class="border-top pt-3">
-                <small class="text-muted">
-                    Need An Account?<a class="ml-2" href="{{ url_for('register') }}">Sign Up Now.</a>
-                </small>
             </div>
         </div>
     </div>
