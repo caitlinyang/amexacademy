@@ -45,6 +45,14 @@ class Item(db.Model):
     def __repr__(self):
         return "Item('{}', '{}', '{}')".format(self.name, self.category, self.location_id)
 
+class Skill(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    category = db.Column(db.String(30), nullable=False)
+    location_id = db.Column(db.Integer, db.ForeignKey('location.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
 # drcsb = Location(name="Desert Ridge: CSB", address="18850 N 56th St", city="Phoenix", state="AZ", zip="85050")
 # dr1 = Location(name="Desert Ridge: OB1", address="18850 N 56th St", city="Phoenix", state="AZ", zip="85050")
 # dr2 = Location(name="Desert Ridge: OB2", address="18850 N 56th St", city="Phoenix", state="AZ", zip="85050")

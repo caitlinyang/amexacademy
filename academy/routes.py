@@ -1,7 +1,7 @@
 from flask import Flask, render_template, url_for, flash, redirect, request
 from academy import app, db, bcrypt
 from academy.models import User, Location, Item
-from academy.forms import RegistrationForm, LoginForm, LocationForm, ItemForm, CategorySearch, ItemSearch
+from academy.forms import RegistrationForm, LoginForm, LocationForm, ItemForm, CategorySearch, ItemSearch, SkillForm
 from flask_login import login_user, current_user, logout_user, login_required
 
 @app.route('/')
@@ -48,6 +48,17 @@ def logout():
 def account():
     items = Item.query.filter_by(user_id=current_user.id).all()
     return render_template('account.html', title="Account", items=items)
+
+@app.route('/account/add_skill', methods=["GET","POST"])
+@login_required
+def add_skill():
+    form = SkillForm()
+    if form.validate_on_submit():
+        item = Item(name=form.name.data, description=form.description.data, category=form.category.data, location=form.location.data, user_id=current_user.id)
+        db.session.add(item)
+        db.session.commit()
+        return redirect(url_for('account'))
+    return render_template('add_skill.html', title="Add Skill", form=form, location=location, legend="Add Skill")
 
 @app.route('/locations')
 @login_required

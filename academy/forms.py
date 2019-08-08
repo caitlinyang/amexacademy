@@ -56,6 +56,20 @@ class ItemForm(FlaskForm):
     endTime = TimeField('End Time', validators=[DataRequired()])
     submit = SubmitField('Submit Item')
 
+class SkillForm(FlaskForm):
+    def get_locations(self):
+        locations = Location.query.all()
+        list = [('all', 'All Locations')]
+        for location in locations:
+            list.append((str(location.id), location.name))
+        return list
+
+    name = StringField('Name', validators=[DataRequired(), Length(min=2,max=100)])
+    description = TextAreaField('Description',validators=[DataRequired()])
+    category = SelectField('Category',choices=[('machine_learning', 'Machine Learning'), ('one_amex', 'One Amex'), ('monitoring', 'Monitoring'), ('products','Products'),('dev_ops','Dev Ops'),('language','Languages'),('front_end','Front End Development'),('testing','Testing'),('other','Other')])
+    location = SelectField('Location', choices=get_locations())
+    submit = SubmitField('Submit Item')
+
 class CategorySearch(FlaskForm):
 
     def get_locations():
