@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, flash, redirect, request
 from academy import app, db, bcrypt
-from academy.models import User, Location, Item
+from academy.models import User, Location, Item, Skill
 from academy.forms import RegistrationForm, LoginForm, LocationForm, ItemForm, CategorySearch, ItemSearch, SkillForm
 from flask_login import login_user, current_user, logout_user, login_required
 
@@ -46,19 +46,54 @@ def logout():
 @app.route('/account')
 @login_required
 def account():
+    skills = Skill.query.filter_by(user_id=current_user.id).all()
     items = Item.query.filter_by(user_id=current_user.id).all()
-    return render_template('account.html', title="Account", items=items)
+    return render_template('account.html', title="Account", items=items, skills=skills)
 
 @app.route('/account/add_skill', methods=["GET","POST"])
 @login_required
 def add_skill():
     form = SkillForm()
     if form.validate_on_submit():
-        item = Item(name=form.name.data, description=form.description.data, category=form.category.data, location=form.location.data, user_id=current_user.id)
-        db.session.add(item)
+        skill = Skill(name=form.name.data, description=form.description.data, category=form.category.data, user_id=current_user.id)
+        db.session.add(skill)
         db.session.commit()
         return redirect(url_for('account'))
-    return render_template('add_skill.html', title="Add Skill", form=form, location=location, legend="Add Skill")
+    return render_template('add_skill.html', title="Add Skill", form=form, legend="Add Skill")
+
+@app.route('/skill/<int:skill_id>')
+@login_required
+def skill(skill_id):
+    skill = Skill.query.get_or_404(skill_id)
+    user = User.query.get_or_404(skill.user_id)
+    return render_template('skill.html', title=skill.name, skill=skill, location=location, user=user)
+
+@app.route('/skill/<int:skill_id>/update_skill', methods=["GET","POST"])
+@login_required
+def update_skill(skill_id):
+    skill = Skill.query.get_or_404(skill_id)
+    # location = Location.query.get_or_404(skill.location_id)
+    form = SkillForm()
+    if form.validate_on_submit():
+        skill.name = form.name.data
+        skill.description = form.description.data
+        skill.category = form.category.data
+        db.session.commit()
+        return redirect(url_for('skill', skill_id=skill.id))
+    elif request.method == 'GET':
+        form.name.data = skill.name
+        form.description.data = skill.description
+        form.category.data = skill.category
+    return render_template('add_skill.html', title="Update Skill", form=form, location=location, legend="Update Skill")
+
+@app.route('/skill/<int:skill_id>/delete_skill', methods=["POST"])
+@login_required
+def delete_skill(skill_id):
+    skill = Skill.query.get_or_404(skill_id)
+    # location = Location.query.get_or_404(skill.location_id)
+    db.session.delete(skill)
+    db.session.commit()
+    return redirect(url_for('account'))
 
 @app.route('/locations')
 @login_required
@@ -144,7 +179,9 @@ def item(item_id):
 def category_search():
     form = CategorySearch()
     items = []
+    skills = []
     if form.validate_on_submit():
+        skills = Skill.query.filter_by(category=form.category.data).all()
         if form.locations.data == 'all':
             items = Item.query.filter_by(category=form.category.data).all()
         else:
@@ -153,7 +190,7 @@ def category_search():
             for item in location.items:
                 if item.category == form.category.data:
                     items.append(item)
-    return render_template('category_search.html', title='Dashboard',form=form, items=items)
+    return render_template('category_search.html', title='Dashboard',form=form, items=items, skills=skills)
 
 @app.route('/dashboard/item_search', methods=["GET","POST"])
 @login_required

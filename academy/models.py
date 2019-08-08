@@ -50,8 +50,10 @@ class Skill(db.Model):
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=False)
     category = db.Column(db.String(30), nullable=False)
-    location_id = db.Column(db.Integer, db.ForeignKey('location.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    def __repr__(self):
+        return "Skill('{}', '{}')".format(self.name, self.category)
 
 # drcsb = Location(name="Desert Ridge: CSB", address="18850 N 56th St", city="Phoenix", state="AZ", zip="85050")
 # dr1 = Location(name="Desert Ridge: OB1", address="18850 N 56th St", city="Phoenix", state="AZ", zip="85050")

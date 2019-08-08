@@ -67,5 +67,26 @@
             {% endfor %}
             </div>
         {% endif %}
+        <hr>
+        <h5>Skills</h5>
+        <hr>
+        {% if skills|length == 0 %}
+            <p>No skills available.</p>
+        {% else %}
+            <div class="row">
+            {% for skill in skills %}
+                <div class="col-sm-4 mb-3">
+                    <div class="card bg-light">
+{#                      <div class="card-header" style="background-color: #a8d0e6">{{ item.location.name }}</div>#}
+                      <div class="card-body">
+                        <h5><a href="{{ url_for('skill', skill_id=skill.id) }}">{{ skill.name }}</a></h5>
+                        <hr>
+                        <p class="card-text">{{ skill.description }}</p>
+                      </div>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+        {% endif %}
     </div>
 {% endblock child %}
