@@ -8,6 +8,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 
 @app.route('/')
 def welcome():
+    return redirect(url_for('login'))
     return render_template("welcome.html")
 
 @app.route('/login', methods=["GET","POST"])
@@ -43,14 +44,23 @@ def dashboard():
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('welcome'))
+    return redirect(url_for('login'))
 
 @app.route('/account')
 @login_required
 def account():
     skills = Skill.query.filter_by(user_id=current_user.id).all()
     items = Item.query.filter_by(user_id=current_user.id).all()
-    return render_template('account.html', title="Account", items=items, skills=skills)
+
+    attend = UserClass.query.filter_by(user_id=current_user.id).all()
+    attends = []
+
+    for user in attend: 
+        item = Item.query.get_or_404(user.item_id)
+        if item not in attends: 
+            attends.append(item)
+
+    return render_template('account.html', title="Account", items=items, skills=skills, attends=attends)
 
 @app.route('/account/add_skill', methods=["GET","POST"])
 @login_required
