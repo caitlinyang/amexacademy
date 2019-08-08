@@ -10,12 +10,11 @@
     {% endif %}
     <hr>
     <nav class="navbar navbar-light bg-white">
-        <h5>Your Skills</h5>
+        <h5>Your Skills:</h5>
         <form class="form-inline">
             <a class="btn btn-secondary" href="{{ url_for('add_skill')}}">Add Skill</a>
         </form>
     </nav>
-    <hr>
     <div class="row">
     {% for skill in skills %}
         <div class="col-sm-4 mb-3">
