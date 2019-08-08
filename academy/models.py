@@ -44,6 +44,15 @@ class Item(db.Model):
     def __repr__(self):
         return "Item('{}', '{}', '{}')".format(self.name, self.category, self.location_id)
 
+class Skill(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    category = db.Column(db.String(30), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    def __repr__(self):
+        return "Skill('{}', '{}')".format(self.name, self.category)
 class UserClass(db.Model): 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)

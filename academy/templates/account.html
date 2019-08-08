@@ -9,6 +9,27 @@
         <p>{{ current_user.description }}</p>
     {% endif %}
     <hr>
+    <nav class="navbar navbar-light bg-white">
+        <h5>Your Skills</h5>
+        <form class="form-inline">
+            <a class="btn btn-secondary" href="{{ url_for('add_skill')}}">Add Skill</a>
+        </form>
+    </nav>
+    <hr>
+    <div class="row">
+    {% for skill in skills %}
+        <div class="col-sm-4 mb-3">
+            <div class="card bg-light">
+              <div class="card-body">
+                <h5><a href="{{ url_for('skill', skill_id=skill.id) }}">{{ skill.name }}</a></h5>
+                <hr>
+                <p class="card-text">{{ skill.description }}</p>
+              </div>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+    <hr>
     <h5>Classes I'm Teaching:</h5>
     <div class="row">
     {% for item in items %}
