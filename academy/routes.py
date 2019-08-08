@@ -46,7 +46,8 @@ def logout():
 @app.route('/account')
 @login_required
 def account():
-    return render_template('account.html', title="Account")
+    items = Item.query.filter_by(user_id=current_user.id).all()
+    return render_template('account.html', title="Account", items=items)
 
 @app.route('/locations')
 @login_required
@@ -84,7 +85,7 @@ def add_item(location_id):
         db.session.add(item)
         db.session.commit()
         return redirect(url_for('location', location_id=location.id))
-    return render_template('add_item.html', title="Add Item", form=form, location=location, legend="Add Item")
+    return render_template('add_item.html', title="Create Class", form=form, location=location, legend="Create Class")
 
 @app.route('/item/<int:item_id>/update_item', methods=["GET","POST"])
 @login_required
