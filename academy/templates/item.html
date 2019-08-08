@@ -12,12 +12,19 @@
         <p><strong>Date:</strong>{{item.date.strftime('%m-%d-%Y')}}</p>
         <p><strong>Start Time:</strong>{{item.startTime.strftime('%l:%M %p')}}</p>
         <p><strong>End Time:</strong>{{item.endTime.strftime('%l:%M %p')}}</p>
-    </div>
+        <hr>
+        <h5>Attendees:</h5>
+        {% for user in attendees %}
+          <p>{{user}}</p>
+        {% endfor %}
+      </div>
 
     <div class="card-footer">
         {% if current_user.id == item.user_id%}
             <a class="btn btn-info btn-sm mr-1" href="{{ url_for('update_item', item_id=item.id)}}">Edit</a>
             <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
+        {% else %}
+        <a class="btn btn-info btn-sm mr-1" href="{{ url_for('join_item', item_id=item.id)}}">Join Class</a>
         {% endif %}
         <p class="text-sm-right m-0"><small>{{ item.date.strftime('%Y-%m-%d %H:%M:%S')}}</small></p>
     </div>

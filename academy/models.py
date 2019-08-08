@@ -15,7 +15,6 @@ class User(db.Model, UserMixin):
     description = db.Column(db.String(500))
     items = db.relationship('Item', backref="item", lazy=True)
 
-
     def __repr__(self):
         return "User('{}', '{}', '{}')".format(self.username, self.email, self.user_type)
 
@@ -54,6 +53,13 @@ class Skill(db.Model):
 
     def __repr__(self):
         return "Skill('{}', '{}')".format(self.name, self.category)
+class UserClass(db.Model): 
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    item_id = db.Column(db.Integer, db.ForeignKey('item.id'), nullable=False)
+
+    def __repr__(self): 
+        return "User {} attends Class {}".format(self.user_id, self.item_id)
 
 # drcsb = Location(name="Desert Ridge: CSB", address="18850 N 56th St", city="Phoenix", state="AZ", zip="85050")
 # dr1 = Location(name="Desert Ridge: OB1", address="18850 N 56th St", city="Phoenix", state="AZ", zip="85050")

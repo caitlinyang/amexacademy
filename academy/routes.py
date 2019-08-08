@@ -1,7 +1,9 @@
 from flask import Flask, render_template, url_for, flash, redirect, request
 from academy import app, db, bcrypt
-from academy.models import User, Location, Item, Skill
-from academy.forms import RegistrationForm, LoginForm, LocationForm, ItemForm, CategorySearch, ItemSearch, SkillForm
+from academy.models import User, Location, Item, UserClass, Skill
+from academy.forms import RegistrationForm, LoginForm,  LocationForm, ItemForm, CategorySearch, ItemSearch, SkillForm
+from academy.models import User, Location, Item, UserClass
+from academy.forms import RegistrationForm, LoginForm, LocationForm, ItemForm, CategorySearch, ItemSearch
 from flask_login import login_user, current_user, logout_user, login_required
 
 @app.route('/')
@@ -72,7 +74,6 @@ def skill(skill_id):
 @login_required
 def update_skill(skill_id):
     skill = Skill.query.get_or_404(skill_id)
-    # location = Location.query.get_or_404(skill.location_id)
     form = SkillForm()
     if form.validate_on_submit():
         skill.name = form.name.data
@@ -163,8 +164,23 @@ def delete_item(item_id):
     item = Item.query.get_or_404(item_id)
     location = Location.query.get_or_404(item.location_id)
     db.session.delete(item)
+
+    all_users = UserClass.query.filter_by(item_id=item_id).all()
+    for x in all_users: 
+        db.session.delete(x)
+
     db.session.commit()
     return redirect(url_for('location', location_id=location.id))
+
+@app.route('/item/<int:item_id>/join_item', methods=["GET","POST"])
+@login_required
+def join_item(item_id):
+    item = Item.query.get_or_404(item_id)
+    location = Location.query.get_or_404(item.location_id)
+    attend = UserClass(user_id = current_user.id, item_id=item.id)
+    db.session.add(attend)
+    db.session.commit()
+    return redirect(url_for('item', item_id=item_id))
 
 @app.route('/item/<int:item_id>')
 @login_required
@@ -172,7 +188,13 @@ def item(item_id):
     item = Item.query.get_or_404(item_id)
     user = User.query.get_or_404(item.user_id)
     location = Location.query.get_or_404(item.location_id)
-    return render_template('item.html', title=item.name, item=item, location=location, user=user)
+
+    all_users = UserClass.query.filter_by(item_id=item_id).all()
+    attendees = []
+    for userClass in all_users: 
+        username = User.query.get_or_404(userClass.user_id).username
+        attendees.append(username)
+    return render_template('item.html', title=item.name, item=item, location=location, user=user, attendees=attendees)
 
 @app.route('/dashboard/category_search', methods=["GET","POST"])
 @login_required
