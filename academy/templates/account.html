@@ -2,8 +2,10 @@
 {% block content %}
     <h1>{{ current_user.username }}</h1>
     <hr>
-    <h5>User Type:</h5>
-    <p>{{ current_user.user_type}}</p>
     <h5>Email:</h5>
     <p>{{ current_user.email }}</p>
+    {% if current_user.description %}
+    <h5>Description:</h5>
+    <p>{{ current_user.description }}</p>
+    {% endif %}
 {% endblock content %}
