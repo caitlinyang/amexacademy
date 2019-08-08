@@ -12,25 +12,22 @@
     <hr>
     <div class="row">
         <div class="col-md-6">
-            <p><strong>Type:</strong> {{ location.type }}</p>
             <p><strong>Address:</strong> {{ location.address }}</p>
             <p><strong>City:</strong> {{ location.city }}</p>
             <p><strong>State:</strong> {{ location.state }}</p>
             <p><strong>Zip:</strong> {{ location.zip }}</p>
-            <p><strong>Phone:</strong> {{ location.phone }}</p>
-            <p><strong>Website:</strong><a href="#"> {{ location.website }}</a>
         </div>
         <div class="col-md-6">
-            <div id="mapid"></div>
+            <div>
+              <p>img.png</p>
+          </div>
         </div>
     </div>
     <hr>
     <nav class="navbar navbar-light bg-white">
-        <h4>Donation List</h4>
+        <h4>Classes List</h4>
         <form class="form-inline">
-        {% if current_user.user_type == 'location_employee'%}
-            <a class="btn btn-secondary" href="{{ url_for('add_item', location_id=location.id)}}">Add Item</a>
-        {% endif %}
+            <a class="btn btn-secondary" href="{{ url_for('add_item', location_id=location.id)}}">Create Class</a>
         </form>
     </nav>
     <hr>
@@ -43,7 +40,7 @@
                 <h5><a href="{{ url_for('item', item_id=item.id) }}">{{ item.name }}</a></h5>
                 <hr>
                 <p class="card-text">{{ item.description }}</p>
-                <p class="card-text"><small class="text-muted">{{ item.date_time.strftime('%Y-%m-%d') }}</small></p>
+                <p class="card-text"><small class="text-muted">{{ item.date.strftime('%Y-%m-%d') }}</small></p>
               </div>
             </div>
         </div>
@@ -51,19 +48,4 @@
     </div>
   </div>
 </div>
-<script>
-    var lat = parseFloat($("div.lat").html());
-    var long = parseFloat($("div.long").html());
-    var name = $("div.name").html();
-    var phone = $("div.phone").html();
-    var mymap = L.map('mapid').setView([lat + 0.020, long], 13);
-    var marker = L.marker([lat, long]).addTo(mymap);
-    marker.bindPopup("<b>"+ name + "</b><br>" + phone).openPopup();
-    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    maxZoom: 18,
-    id: 'mapbox.streets',
-    accessToken: 'pk.eyJ1IjoiY3lhbmcyMyIsImEiOiJjanBheTdnc2gwMmsxM3BxZG1iaHRyemprIn0.mIeltoOkLoKILQD7Z2CUTw'
-    }).addTo(mymap);
-</script>
 {% endblock content %}

@@ -5,17 +5,21 @@
         <h2>{{ item.name }}</h2>
     </div>
     <div class="card-body">
+        <p><strong>Hosted By:</strong> {{ user.username }}</p>
         <p><strong>Description:</strong> {{ item.description }}</p>
         <p><strong>Category:</strong> {{ item.category }}</p>
         <p><strong>Location: </strong><a href="{{ url_for('location', location_id=location.id) }}"> {{ location.name }}</a></p>
+        <p><strong>Date:</strong>{{item.date.strftime('%m-%d-%Y')}}</p>
+        <p><strong>Start Time:</strong>{{item.startTime.strftime('%l:%M %p')}}</p>
+        <p><strong>End Time:</strong>{{item.endTime.strftime('%l:%M %p')}}</p>
     </div>
 
     <div class="card-footer">
-        {% if current_user.user_type == 'location_employee' %}
+        {% if current_user.id == item.user_id%}
             <a class="btn btn-info btn-sm mr-1" href="{{ url_for('update_item', item_id=item.id)}}">Edit</a>
             <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
         {% endif %}
-        <p class="text-sm-right m-0"><small>{{ item.date_time.strftime('%Y-%m-%d %H:%M:%S')}}</small></p>
+        <p class="text-sm-right m-0"><small>{{ item.date.strftime('%Y-%m-%d %H:%M:%S')}}</small></p>
     </div>
 </div>
 <!-- Modal -->

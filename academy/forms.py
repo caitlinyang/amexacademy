@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, TextAreaField, DateField, TimeField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 from academy.models import User, Location, Item
 
@@ -40,11 +40,6 @@ class LocationForm(FlaskForm):
     city = StringField('City', validators=[DataRequired()])
     state = StringField('State', validators=[DataRequired(), Length(min=2,max=2)])
     zip = StringField('Zip Code', validators=[DataRequired()])
-    lat = StringField('Lat', validators=[DataRequired()])
-    long = StringField('Long', validators=[DataRequired()])
-    type = SelectField('Type', choices=[('drop_off','Drop Off'), ('store','Store'), ('warehouse','Warehouse')])
-    phone = StringField('Phone', validators=[DataRequired()])
-    website = StringField('Website', validators=[DataRequired()])
     submit = SubmitField('Create Location')
 
     def validate_username(self, username):
@@ -55,7 +50,10 @@ class LocationForm(FlaskForm):
 class ItemForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(min=2,max=100)])
     description = TextAreaField('Description',validators=[DataRequired()])
-    category = SelectField('Category',choices=[('shirts', 'Shirts'), ('pants','Pants'),('shorts','Shorts'),('shoes','Shoes'),('home','Home'),('misc','Misc'),('books','Books')])
+    category = SelectField('Category',choices=[('machine_learning', 'Machine Learning'), ('one_amex', 'One Amex'), ('monitoring', 'Monitoring'), ('products','Products'),('dev_ops','Dev Ops'),('language','Languages'),('front_end','Front End Development'),('testing','Testing'),('other','Other')])
+    date = DateField('Class Date',validators=[DataRequired()])
+    startTime = TimeField('Start Time', validators=[DataRequired()])
+    endTime = TimeField('End Time', validators=[DataRequired()])
     submit = SubmitField('Submit Item')
 
 class CategorySearch(FlaskForm):
@@ -67,7 +65,7 @@ class CategorySearch(FlaskForm):
             list.append((str(location.id), location.name))
         return list
 
-    category = SelectField('Category',choices=[('shirts', 'Shirts'), ('pants','Pants'),('shorts','Shorts'),('shoes','Shoes'),('home','Home'),('misc','Misc'),('books','Books')])
+    category = SelectField('Topics',choices=[('machine_learning', 'Machine Learning'), ('one_amex', 'One Amex'), ('monitoring', 'Monitoring'), ('products','Products'),('dev_ops','Dev Ops'),('language','Languages'),('front_end','Front End Development'),('testing','Testing'),('other','Other')])
     locations = SelectField('Locations',choices=get_locations())
     submit = SubmitField('Search')
 
@@ -80,6 +78,6 @@ class ItemSearch(FlaskForm):
             list.append((str(location.id), location.name))
         return list
 
-    name = StringField('Item Name', validators=[DataRequired(), Length(min=2,max=100)])
+    name = StringField('Session Name', validators=[DataRequired(), Length(min=2,max=100)])
     locations = SelectField('Locations',choices=get_locations())
     submit = SubmitField('Search')

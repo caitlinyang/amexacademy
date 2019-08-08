@@ -80,7 +80,7 @@ def add_item(location_id):
     location = Location.query.get_or_404(location_id)
     form = ItemForm()
     if form.validate_on_submit():
-        item = Item(name=form.name.data, description=form.description.data, category=form.category.data, location_id=location_id)
+        item = Item(name=form.name.data, description=form.description.data, category=form.category.data, date=form.date.data, startTime=form.startTime.data, endTime=form.endTime.data, location_id=location_id, user_id=current_user.id)
         db.session.add(item)
         db.session.commit()
         return redirect(url_for('location', location_id=location.id))
@@ -91,19 +91,23 @@ def add_item(location_id):
 def update_item(item_id):
     item = Item.query.get_or_404(item_id)
     location = Location.query.get_or_404(item.location_id)
-    if current_user.user_type != 'location_employee':
-        abort(403)
     form = ItemForm()
     if form.validate_on_submit():
         item.name = form.name.data
         item.description = form.description.data
         item.category = form.category.data
+        item.date = form.date.data
+        item.startTime = form.startTime.data
+        item.endTime = form.endTime.data
         db.session.commit()
         return redirect(url_for('item', item_id=item.id))
     elif request.method == 'GET':
         form.name.data = item.name
         form.description.data = item.description
         form.category.data = item.category
+        form.date.data = item.date
+        form.startTime.data = item.startTime
+        form.endTime.data = item.endTime
     return render_template('add_item.html', title="Update Item", form=form, location=location, legend="Update Item")
 
 @app.route('/item/<int:item_id>/delete_item', methods=["POST"])
@@ -111,8 +115,6 @@ def update_item(item_id):
 def delete_item(item_id):
     item = Item.query.get_or_404(item_id)
     location = Location.query.get_or_404(item.location_id)
-    if current_user.user_type != 'location_employee':
-        abort(403)
     db.session.delete(item)
     db.session.commit()
     return redirect(url_for('location', location_id=location.id))
@@ -121,8 +123,9 @@ def delete_item(item_id):
 @login_required
 def item(item_id):
     item = Item.query.get_or_404(item_id)
+    user = User.query.get_or_404(item.user_id)
     location = Location.query.get_or_404(item.location_id)
-    return render_template('item.html', title=item.name, item=item, location=location)
+    return render_template('item.html', title=item.name, item=item, location=location, user=user)
 
 @app.route('/dashboard/category_search', methods=["GET","POST"])
 @login_required
